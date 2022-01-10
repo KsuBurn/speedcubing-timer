@@ -168,6 +168,10 @@ export default {
 
 <style scoped>
 .wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
   text-align: center;
 }
 

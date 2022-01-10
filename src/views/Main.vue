@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mainContainer">
     <Timer/>
     <ResultList/>
   </div>
@@ -19,5 +19,9 @@ export default {
 </script>
 
 <style scoped>
-
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100% - 50px);
+}
 </style>

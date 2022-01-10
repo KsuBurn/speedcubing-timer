@@ -1,41 +1,35 @@
 <template>
   <div class="wrap">
-    <v-simple-table>
-      <tbody>
-      <tr>
-        <td> Best:</td>
-        <td  v-if="bestResult">
-          <ResultFormat :result="bestResult"/>
-        </td>
-      </tr>
-      <tr>
-        <td>Last:</td>
-        <td v-if="lastResult">
-          <ResultFormat :result="lastResult"/>
-        </td>
-      </tr>
-      <tr>
-        <td>Mean:</td>
-        <td v-if="meanResult">
-          <ResultFormat :result="meanResult"/>
-        </td>
-      </tr>
-      </tbody>
-    </v-simple-table>
-
-    <v-simple-table>
-        <tbody>
-        <tr
-          v-for="(result, index) in resultList"
-          :key="index"
+    <v-card class="resultsCard">
+      <v-card-title class="subheading font-weight-bold">
+        Results
+      </v-card-title>
+      <v-list dense class="resultsList">
+        <v-list-item
+          v-for="(item) in resultList"
+          :key="item.index"
         >
-          <td>{{ index + 1 }}.</td>
-          <td>
-            <ResultFormat :result="result"/>
-          </td>
-        </tr>
-        </tbody>
-    </v-simple-table>
+          <v-list-item-content>{{ item.index }}.</v-list-item-content>
+          <v-list-item-content class="align-end">
+            <ResultFormat :result="item.result"/>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
+
+    <v-card class="statsCard">
+      <v-card-title class="subheading font-weight-bold">
+        Stats
+      </v-card-title>
+      <v-list dense>
+        <v-list-item v-for="(item, index) in stats" :key="index">
+          <v-list-item-content>{{ item.name }}:</v-list-item-content>
+          <v-list-item-content class="align-end">
+            <ResultFormat :result="item.result"/>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
   </div>
 </template>
 
@@ -49,28 +43,13 @@ export default {
     ResultFormat,
   },
 
-  methods: {
-    normalizeTimer(result) {
-      let min;
-      let sec;
-
-      if (result / 60000 >= 1) {
-        min = Math.floor(result / 60000);
-        sec = (result - min * 60000) / 1000;
-      } else {
-        sec = result / 1000;
-      }
-
-      return {
-        min,
-        sec,
-      };
-    },
-  },
-
   computed: {
     resultList() {
-      return this.$store.getters.getResults;
+      const results = this.$store.getters.getResults.map((item, index) => ({
+        index: index + 1,
+        result: item,
+      }));
+      return results.reverse();
     },
 
     bestResult() {
@@ -85,9 +64,25 @@ export default {
       return this.$store.state.currentSettings;
     },
 
-    meanResult() {
-      console.log(typeof this.$store.getters.getMeanResult);
-      return this.$store.getters.getMeanResult;
+    averageResult() {
+      return this.$store.getters.getAverageResult;
+    },
+
+    stats() {
+      return [
+        {
+          name: 'Best',
+          result: this.bestResult,
+        },
+        {
+          name: 'Last',
+          result: this.lastResult,
+        },
+        {
+          name: 'Average',
+          result: this.averageResult,
+        },
+      ];
     },
   },
 };
@@ -96,5 +91,23 @@ export default {
 <style scoped>
 .wrap {
   display: flex;
+  justify-content: space-around;
+  height: 30vh;
+}
+
+.statsCard {
+  width: 40%;
+  height: fit-content;
+}
+
+.resultsCard {
+  width: 40%;
+  max-height: 90%;
+  height: min-content;
+}
+
+.resultsList {
+  max-height: 200px;
+  overflow-y: auto;
 }
 </style>

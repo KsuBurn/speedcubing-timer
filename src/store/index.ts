@@ -49,7 +49,7 @@ export default new Vuex.Store({
       return [];
     },
 
-    getMeanResult(state: any): number {
+    getAverageResult(state: any): number {
       const allResults = state.results[state.currentSettings];
 
       if (allResults.length) {
