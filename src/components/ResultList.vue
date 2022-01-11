@@ -1,9 +1,6 @@
 <template>
   <div class="wrap">
-    <v-card class="resultsCard">
-      <v-card-title class="subheading font-weight-bold">
-        Results
-      </v-card-title>
+    <CardTemplate title="Results" cardClass="resultsCard">
       <v-list dense class="resultsList">
         <v-list-item
           v-for="(item) in resultList"
@@ -15,32 +12,34 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-card>
+    </CardTemplate>
 
-    <v-card class="statsCard">
-      <v-card-title class="subheading font-weight-bold">
-        Stats
-      </v-card-title>
+    <CardTemplate title="Stats" cardClass="statsCard">
       <v-list dense>
-        <v-list-item v-for="(item, index) in stats" :key="index">
+        <v-list-item
+          v-for="(item, index) in stats"
+          :key="index"
+        >
           <v-list-item-content>{{ item.name }}:</v-list-item-content>
           <v-list-item-content class="align-end">
             <ResultFormat :result="item.result"/>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-card>
+    </CardTemplate>
   </div>
 </template>
 
 <script>
 import ResultFormat from '@/components/ResultFormat.vue';
+import CardTemplate from '@/components/CardTemplate.vue';
 
 export default {
   name: 'ResultList',
 
   components: {
     ResultFormat,
+    CardTemplate,
   },
 
   computed: {

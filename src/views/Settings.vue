@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="mainContainer">
     <v-select
+      class="input"
       :items="typeOfCubes"
       label="Type"
       :value="getCurrentCubeType"
@@ -38,5 +39,11 @@ export default {
 </script>
 
 <style scoped>
+.mainContainer {
+  padding: 15px;
+}
 
+.input {
+  width: 40%;
+}
 </style>

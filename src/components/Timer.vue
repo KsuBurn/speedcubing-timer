@@ -29,6 +29,11 @@
 export default {
   name: 'Timer',
 
+  props: {
+    showScramble: Function,
+    hideScramble: Function,
+  },
+
   data() {
     return {
       min: 0,
@@ -52,6 +57,7 @@ export default {
 
   methods: {
     startTimer() {
+      this.$emit('hide-scramble');
       this.resetTimer();
       this.isTimerStarted = true;
       let startTime = new Date();
@@ -80,6 +86,7 @@ export default {
         const allTime = this.msec + this.sec * 1000 + this.min * 1000 * 60;
         this.saveTime(allTime);
         this.isTimerStarted = false;
+        this.$emit('show-scramble');
       }
     },
 
@@ -159,7 +166,7 @@ export default {
         this.timerReadyId = setTimeout(() => {
           this.timerColor = 'green';
           this.resetTimer();
-        }, 2000);
+        }, 1500);
       }
     });
   },

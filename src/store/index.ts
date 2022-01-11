@@ -54,7 +54,8 @@ export default new Vuex.Store({
 
       if (allResults.length) {
         // eslint-disable-next-line max-len
-        return (allResults.reduce((prevValue: number, curValue: number) => prevValue + curValue, 0)) / allResults.length;
+        const average = (allResults.reduce((prevValue: number, curValue: number) => prevValue + curValue, 0)) / allResults.length;
+        return Number(average.toFixed(3));
       }
       return 0;
     },

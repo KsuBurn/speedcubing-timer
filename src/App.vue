@@ -1,23 +1,26 @@
 <template>
   <v-app>
     <div id="app">
-      <v-toolbar
-        dense
+      <v-tabs
+        background-color="cyan"
+        slider-color="#177bd1"
+        dark
+        flat
       >
         <v-spacer></v-spacer>
         <router-link to="/">
-          <v-btn icon>
+          <v-tab class="tab">
             <v-icon>mdi-av-timer</v-icon>
-          </v-btn>
+          </v-tab>
         </router-link>
         <v-spacer></v-spacer>
         <router-link to="/settings">
-          <v-btn icon>
+          <v-tab class="tab">
             <v-icon>mdi-cog</v-icon>
-          </v-btn>
+          </v-tab>
         </router-link>
         <v-spacer></v-spacer>
-      </v-toolbar>
+      </v-tabs>
       <router-view/>
     </div>
   </v-app>
@@ -30,5 +33,9 @@
 
 a {
   text-decoration: none;
+}
+
+.tab {
+  height: 100%;
 }
 </style>
