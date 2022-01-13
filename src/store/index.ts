@@ -24,6 +24,7 @@ export default new Vuex.Store({
       '7x7x7': 0,
     },
     currentSettings: '3x3x3',
+    scramble: [],
   },
   mutations: {
     changeSettings(state, payload) {
@@ -39,6 +40,10 @@ export default new Vuex.Store({
 
       state.bestResult[payload.cubeType] = Math.min.apply(null, state.results[payload.cubeType]);
       state.lastResult[payload.cubeType] = payload.result;
+    },
+
+    saveScramble(state, payload) {
+      state.scramble = payload;
     },
   },
   getters: {

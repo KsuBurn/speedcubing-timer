@@ -46,6 +46,8 @@ export default {
         preMove = move;
         this.scramble.push(move + this.getRandomSide(movesModifiers));
       }
+
+      this.$store.commit('saveScramble', this.scramble);
     },
   },
 

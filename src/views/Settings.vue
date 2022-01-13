@@ -31,10 +31,6 @@ export default {
       return this.$store.state.currentSettings;
     },
   },
-
-  mounted() {
-    console.log(this.getCurrentCubeType);
-  },
 };
 </script>
 
