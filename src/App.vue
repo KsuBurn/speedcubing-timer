@@ -20,6 +20,12 @@
           </v-tab>
         </router-link>
         <v-spacer></v-spacer>
+        <router-link to="/favorites">
+          <v-tab class="tab">
+            <v-icon>mdi-heart</v-icon>
+          </v-tab>
+        </router-link>
+        <v-spacer></v-spacer>
       </v-tabs>
       <router-view/>
     </div>

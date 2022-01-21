@@ -10,6 +10,21 @@
           <v-list-item-content class="align-end">
             <ResultFormat :result="item.result"/>
           </v-list-item-content>
+          <v-btn
+            icon
+            @click="deleteResult(item.index - 1)"
+          >
+            <v-icon>mdi-delete-outline</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            @click="toggleFavorites(item.result)"
+          >
+            <v-icon v-if="!!getFavorites.find((res) => res === item.result)" color="red">
+              mdi-heart
+            </v-icon>
+            <v-icon v-else>mdi-heart-outline</v-icon>
+          </v-btn>
         </v-list-item>
       </v-list>
     </CardTemplate>
@@ -40,6 +55,20 @@ export default {
   components: {
     ResultFormat,
     CardTemplate,
+  },
+
+  methods: {
+    deleteResult(index) {
+      this.$store.commit('deleteResult', index);
+    },
+
+    toggleFavorites(result) {
+      if (this.getFavorites.find((res) => res === result)) {
+        this.$store.commit('removeFromFavorites', result);
+      } else {
+        this.$store.commit('addToFavorites', result);
+      }
+    },
   },
 
   computed: {
@@ -82,6 +111,10 @@ export default {
           result: this.averageResult,
         },
       ];
+    },
+
+    getFavorites() {
+      return this.$store.state.favorites;
     },
   },
 };

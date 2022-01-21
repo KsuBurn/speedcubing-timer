@@ -27,7 +27,7 @@ export default {
 
       return {
         min,
-        sec,
+        sec: sec.toFixed(3),
       };
     },
   },

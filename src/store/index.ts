@@ -25,6 +25,7 @@ export default new Vuex.Store({
     },
     currentSettings: '3x3x3',
     scramble: [],
+    favorites: [],
   },
   mutations: {
     changeSettings(state, payload) {
@@ -45,6 +46,24 @@ export default new Vuex.Store({
     saveScramble(state, payload) {
       state.scramble = payload;
     },
+
+    deleteResult(state: any, payload) {
+      const cubeType = state.currentSettings;
+      const resultList = state.results[cubeType];
+
+      resultList.splice(payload, 1);
+      state.results[cubeType] = resultList;
+      state.bestResult[cubeType] = Math.min.apply(null, state.results[cubeType]);
+      state.lastResult[cubeType] = state.results[cubeType][state.results[cubeType].length - 1];
+    },
+
+    addToFavorites(state: any, payload) {
+      state.favorites.push(payload);
+    },
+
+    removeFromFavorites(state: any, payload) {
+      state.favorites = state.favorites.filter((item: number) => item !== payload);
+    },
   },
   getters: {
     getResults(state: any) {
@@ -60,7 +79,7 @@ export default new Vuex.Store({
       if (allResults.length) {
         // eslint-disable-next-line max-len
         const average = (allResults.reduce((prevValue: number, curValue: number) => prevValue + curValue, 0)) / allResults.length;
-        return Number(average.toFixed(3));
+        return average;
       }
       return 0;
     },
