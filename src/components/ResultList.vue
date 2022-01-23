@@ -139,7 +139,7 @@ export default {
 }
 
 .resultsList {
-  max-height: 200px;
+  max-height: 170px;
   overflow-y: auto;
 }
 </style>

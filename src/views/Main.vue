@@ -5,21 +5,11 @@
         Current cube:
         <span class="currentSettings">{{ getCurrenSettings }}</span>
       </div>
-      <div class="cubeLayout">
-        <Modal btnTitle="Show cube layout" v-model="dialog">
-          <template v-slot:default="{ showContent }">
-            <div class="modalContentWrap" v-if="showContent">
-              <CubeLayout />
-            </div>
-          </template>
-        </Modal>
-      </div>
     </div>
-    <Scramble :is-showed-scramble="isShowedScramble"/>
+    <Scramble :scramble="scramble"/>
 
     <Timer
-      @show-scramble="showScramble"
-      @hide-scramble="hideScramble"
+      @get-scramble="getScramble"
     />
     <ResultList/>
   </div>
@@ -31,12 +21,11 @@ import ResultList from '@/components/ResultList.vue';
 import Scramble from '@/components/Scramble.vue';
 import CubeLayout from '@/components/CubeLayout.vue';
 import Modal from '@/components/Modal.vue';
+import { movesModifiers, scrambleLen, standardCubeSides } from '@/constants';
 
 export default {
   name: 'Main',
   components: {
-    Modal,
-    CubeLayout,
     Timer,
     ResultList,
     Scramble,
@@ -44,20 +33,33 @@ export default {
 
   data() {
     return {
-      isShowedScramble: false,
+      newScramble: false,
       dialog: false,
+      scramble: [],
     };
   },
 
   methods: {
-    showScramble() {
-      this.isShowedScramble = true;
+    getRandomSide(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     },
 
-    hideScramble() {
-      this.isShowedScramble = false;
-    },
+    getScramble() {
+      this.scramble = [];
+      let preMove = null;
+      let prePreMove = null;
+      for (let i = 0; i < scrambleLen; i += 1) {
+        let move = this.getRandomSide(standardCubeSides);
+        while (move === preMove || move === prePreMove) {
+          move = this.getRandomSide(standardCubeSides);
+        }
+        prePreMove = preMove;
+        preMove = move;
+        this.scramble.push(move + this.getRandomSide(movesModifiers));
+      }
 
+      this.$store.commit('saveScramble', this.scramble);
+    },
   },
 
   computed: {
@@ -67,7 +69,7 @@ export default {
   },
 
   mounted() {
-    this.showScramble();
+    this.getScramble();
   },
 };
 </script>
@@ -87,14 +89,5 @@ export default {
 
 .currentSettings {
   font-weight: bold;
-}
-
-.modalContentWrap {
-  padding: 15px;
-}
-
-.cubeLayout {
-  float: right;
-  margin-bottom: 20px;
 }
 </style>

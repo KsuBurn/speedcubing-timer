@@ -80,10 +80,8 @@ import {
 export default {
   name: 'CubeLayout',
 
-  computed: {
-    getScramble() {
-      return this.$store.state.scramble;
-    },
+  props: {
+    scramble: Array,
   },
 
   methods: {
@@ -93,6 +91,7 @@ export default {
         const newIndex = moveToApply[i];
         modifiedState.push(initialState[newIndex]);
       }
+
       return modifiedState;
     },
 
@@ -100,6 +99,7 @@ export default {
       layout.forEach((elem, idx) => {
         const colorClass = classMap[stickerColorMap[elem]];
         const sticker = document.getElementById(idx);
+        sticker.className = 'sticker';
         sticker.classList.add(`${colorClass}Color`);
       });
     },
@@ -118,8 +118,8 @@ export default {
         .split('');
     },
 
-    getCubeSweep() {
-      const scrambleForLayout = this.convertScrambleForLayout(this.getScramble);
+    getCubeLayout() {
+      const scrambleForLayout = this.convertScrambleForLayout(this.scramble);
       let targetLayout = initialStickerPositions;
 
       for (let i = 0; i < scrambleForLayout.length; i += 1) {
@@ -130,8 +130,10 @@ export default {
     },
   },
 
-  mounted() {
-    this.getCubeSweep();
+  watch: {
+    scramble() {
+      this.getCubeLayout();
+    },
   },
 };
 </script>
@@ -139,8 +141,8 @@ export default {
 <style scoped>
 .wrap {
   display: grid;
-  grid-template-columns: repeat(4, 200px);
-  grid-template-rows: repeat(3, 200px);
+  grid-template-columns: repeat(4, 90px);
+  grid-template-rows: repeat(3, 90px);
   justify-content: center;
 }
 

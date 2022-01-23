@@ -86,7 +86,7 @@ export default {
         const allTime = this.msec + this.sec * 1000 + this.min * 1000 * 60;
         this.saveTime(allTime);
         this.isTimerStarted = false;
-        this.$emit('show-scramble');
+        this.$emit('get-scramble');
       }
     },
 
@@ -147,7 +147,7 @@ export default {
         this.endPressTime = new Date().getTime();
         this.timerColor = 'black';
 
-        if (this.endPressTime - this.startPressTime < 2000) {
+        if (this.endPressTime - this.startPressTime < 1000) {
           clearInterval(this.timerReadyId);
           this.stopTimer();
         } else {
@@ -166,7 +166,7 @@ export default {
         this.timerReadyId = setTimeout(() => {
           this.timerColor = 'green';
           this.resetTimer();
-        }, 1500);
+        }, 1000);
       }
     });
   },
