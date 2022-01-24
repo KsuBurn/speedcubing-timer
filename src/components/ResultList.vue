@@ -10,12 +10,9 @@
           <v-list-item-content class="align-end">
             <ResultFormat :result="item.result"/>
           </v-list-item-content>
-          <v-btn
-            icon
-            @click="deleteResult(item.index - 1)"
-          >
-            <v-icon>mdi-delete-outline</v-icon>
-          </v-btn>
+
+          <ResultSettingsBtn :item="item" />
+
           <v-btn
             icon
             @click="toggleFavorites(item.result)"
@@ -48,6 +45,7 @@
 <script>
 import ResultFormat from '@/components/ResultFormat.vue';
 import CardTemplate from '@/components/CardTemplate.vue';
+import ResultSettingsBtn from '@/components/ResultSettingsBtn.vue';
 
 export default {
   name: 'ResultList',
@@ -55,13 +53,10 @@ export default {
   components: {
     ResultFormat,
     CardTemplate,
+    ResultSettingsBtn,
   },
 
   methods: {
-    deleteResult(index) {
-      this.$store.commit('deleteResult', index);
-    },
-
     toggleFavorites(result) {
       if (this.getFavorites.find((res) => res === result)) {
         this.$store.commit('removeFromFavorites', result);
