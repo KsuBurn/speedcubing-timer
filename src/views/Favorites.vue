@@ -8,13 +8,13 @@
         >
           <v-list-item-content>{{ index + 1 }}.</v-list-item-content>
           <v-list-item-content class="align-end">
-            <ResultFormat :result="item"/>
+            <ResultFormat :result="item.result"/>
           </v-list-item-content>
           <v-btn
             icon
             @click="toggleFavorites(item)"
           >
-            <v-icon v-if="!!favoritesList.find((res) => res === item)" color="red">
+            <v-icon v-if="!!favoritesList.find((res) => res.result === item.result)" color="red">
               mdi-heart
             </v-icon>
             <v-icon v-else>mdi-heart-outline</v-icon>
@@ -44,11 +44,11 @@ export default {
   },
 
   methods: {
-    toggleFavorites(result) {
-      if (this.favoritesList.find((res) => res === result)) {
-        this.$store.commit('removeFromFavorites', result);
+    toggleFavorites(item) {
+      if (this.favoritesList.find((res) => res.result === item.result)) {
+        this.$store.commit('removeFromFavorites', item);
       } else {
-        this.$store.commit('addToFavorites', result);
+        this.$store.commit('addToFavorites', item);
       }
     },
   },

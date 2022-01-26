@@ -8,9 +8,13 @@
         >
           <v-list-item-content>{{ item.index }}.</v-list-item-content>
           <v-list-item-content class="align-end">
-            <div :class="['result', {dnf: isDNFActive(item.result)}]">
-              <ResultFormat :result="item.result" :penalty-active="isPenaltyActive(item.result)" />
-              <span v-if="isPenaltyActive(item.result)" class="penalty">&nbsp;(+2)</span>
+            <div class="result">
+              <ResultFormat
+                :result="item.result"
+                :class="[{dnfResult: item.dnf}]"
+              />
+              <span v-if="item.penalty" class="penalty">&nbsp;(+2)</span>
+              <span v-if="item.dnf">&nbsp;(DNF)</span>
             </div>
           </v-list-item-content>
 
@@ -18,15 +22,15 @@
             :item="item"
             @toggle-dnf="toggleDNF"
             @toggle-penalty="togglePenalty"
-            :dnf-active="isDNFActive(item.result)"
-            :penalty-active="isPenaltyActive(item.result)"
+            :dnf-active="item.dnf"
+            :penalty-active="item.penalty"
           />
 
           <v-btn
             icon
-            @click="toggleFavorites(item.result)"
+            @click="toggleFavorites(item)"
           >
-            <v-icon v-if="!!getFavorites.find((res) => res === item.result)" color="red">
+            <v-icon v-if="!!getFavorites.find((res) => res.result === item.result)" color="red">
               mdi-heart
             </v-icon>
             <v-icon v-else>mdi-heart-outline</v-icon>
@@ -66,45 +70,32 @@ export default {
   },
 
   methods: {
-    toggleFavorites(result) {
-      if (this.getFavorites.find((res) => res === result)) {
-        this.$store.commit('removeFromFavorites', result);
+    toggleFavorites(item) {
+      if (this.getFavorites.find((res) => res.result === item.result)) {
+        this.$store.commit('removeFromFavorites', item);
       } else {
-        this.$store.commit('addToFavorites', result);
+        this.$store.commit('addToFavorites', item);
       }
     },
 
     toggleDNF(result) {
-      if (this.getDNF.find((res) => res === result)) {
-        this.$store.commit('removeFromDNF', result);
-      } else {
-        this.$store.commit('addToDNF', result);
-      }
+      this.$store.commit('changeDNF', result);
     },
 
-    togglePenalty(result) {
-      if (this.getPenalty.find((res) => res === result)) {
-        this.$store.commit('removeFromPenalty', result);
-      } else {
-        this.$store.commit('addToPenalty', result);
-      }
-    },
-
-    isDNFActive(result) {
-      return !!this.getDNF.find((res) => res === result);
-    },
-
-    isPenaltyActive(result) {
-      return !!this.getPenalty.find((res) => res === result);
+    togglePenalty(item) {
+      this.$store.commit('changePenalty', item);
     },
   },
 
   computed: {
     resultList() {
       const results = this.$store.getters.getResults.map((item, index) => ({
+        ...item,
         index: index + 1,
-        result: item,
       }));
+
+      this.$store.commit('changeBestResult');
+      this.$store.commit('changeLastResult');
       return results.reverse();
     },
 
@@ -144,14 +135,6 @@ export default {
     getFavorites() {
       return this.$store.state.favorites;
     },
-
-    getDNF() {
-      return this.$store.state.dnf;
-    },
-
-    getPenalty() {
-      return this.$store.state.penalty;
-    },
   },
 };
 </script>
@@ -187,7 +170,7 @@ export default {
   color: #ffe000;
 }
 
-.dnf {
+.dnfResult {
   text-decoration: line-through;
   color: #aaaaaa;
 }

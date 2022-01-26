@@ -87,6 +87,7 @@ export default {
         this.saveTime(allTime);
         this.isTimerStarted = false;
         this.$emit('get-scramble');
+        clearInterval(this.timerReadyId);
       }
     },
 
@@ -138,10 +139,8 @@ export default {
         this.timeForView.min = `${this.min}`;
       }
     },
-  },
 
-  mounted() {
-    document.addEventListener('keyup', (evt) => {
+    handleKeyup(evt) {
       if (evt.code === 'Space') {
         this.pressed = false;
         this.endPressTime = new Date().getTime();
@@ -154,9 +153,9 @@ export default {
           this.startTimer();
         }
       }
-    });
+    },
 
-    document.addEventListener('keydown', (evt) => {
+    handleKeydown(evt) {
       if (evt.code === 'Space' && !this.pressed) {
         this.stopTimer();
         this.startPressTime = new Date().getTime();
@@ -168,7 +167,21 @@ export default {
           this.resetTimer();
         }, 1000);
       }
-    });
+    },
+  },
+
+  mounted() {
+    document.addEventListener('keyup', this.handleKeyup);
+
+    document.addEventListener('keydown', this.handleKeydown);
+  },
+
+  destroyed() {
+    clearInterval(this.timerReadyId);
+    clearInterval(this.timerId);
+
+    document.removeEventListener('keyup', this.handleKeyup);
+    document.removeEventListener('keydown', this.handleKeydown);
   },
 };
 </script>

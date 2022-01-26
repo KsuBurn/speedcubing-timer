@@ -26,38 +26,67 @@ export default new Vuex.Store({
     currentSettings: '3x3x3',
     scramble: [],
     favorites: [],
-    dnf: [],
-
-    penalty: [],
   },
   mutations: {
+    saveScramble(state, payload) {
+      state.scramble = payload;
+    },
+
     changeSettings(state, payload) {
       state.currentSettings = payload;
     },
 
     saveResult(state: any, payload) {
       if (payload.cubeType in state.results) {
-        state.results[payload.cubeType] = [...state.results[payload.cubeType], payload.result];
+        state.results[payload.cubeType] = [...state.results[payload.cubeType], {
+          result: payload.result,
+          dnf: false,
+          penalty: false,
+        }];
       } else {
-        state.results[payload.cubeType] = [payload.result];
+        state.results[payload.cubeType] = [{
+          result: payload.result,
+          dnf: false,
+          penalty: false,
+        }];
       }
-
-      state.bestResult[payload.cubeType] = Math.min.apply(null, state.results[payload.cubeType]);
-      state.lastResult[payload.cubeType] = payload.result;
-    },
-
-    saveScramble(state, payload) {
-      state.scramble = payload;
     },
 
     deleteResult(state: any, payload) {
       const cubeType = state.currentSettings;
       const resultList = state.results[cubeType];
 
-      resultList.splice(payload, 1);
-      state.results[cubeType] = resultList;
-      state.bestResult[cubeType] = Math.min.apply(null, state.results[cubeType]);
-      state.lastResult[cubeType] = state.results[cubeType][state.results[cubeType].length - 1];
+      state.results[cubeType] = resultList.filter((item: any) => item.result !== payload);
+    },
+
+    changeBestResult(state: any) {
+      const cubeType = state.currentSettings;
+
+      // eslint-disable-next-line array-callback-return,consistent-return
+      const resultsArr = [];
+      // eslint-disable-next-line for-direction,no-plusplus
+      for (let i = 0; i < state.results[cubeType].length; i += 1) {
+        if (!state.results[cubeType][i].dnf) {
+          resultsArr.push(state.results[cubeType][i].result);
+        }
+      }
+
+      if (!resultsArr.length) {
+        state.bestResult[cubeType] = 0;
+        return;
+      }
+      const bestResult = Math.min.apply(null, resultsArr);
+      // eslint-disable-next-line max-len
+      state.bestResult[cubeType] = state.results[cubeType].find((item: any) => item.result === bestResult).result;
+    },
+
+    changeLastResult(state: any) {
+      const cubeType = state.currentSettings;
+      if (!state.results[cubeType].length) {
+        return;
+      }
+      // eslint-disable-next-line max-len
+      state.lastResult[cubeType] = state.results[cubeType][state.results[cubeType].length - 1].result;
     },
 
     addToFavorites(state: any, payload) {
@@ -65,31 +94,45 @@ export default new Vuex.Store({
     },
 
     removeFromFavorites(state: any, payload) {
-      state.favorites = state.favorites.filter((item: number) => item !== payload);
+      state.favorites = state.favorites.filter((item: any) => item.result !== payload.result);
     },
 
-    addToDNF(state: any, payload) {
+    changeDNF(state: any, payload) {
       const cubeType = state.currentSettings;
-
-      const resultList = state.results[cubeType];
-      resultList.splice(payload, 1);
-      console.log('newResultList', payload);
-      console.log('resultList', resultList);
-      state.dnf.push(payload);
-      state.bestResult[cubeType] = Math.min.apply(null, resultList);
-      state.lastResult[cubeType] = resultList[resultList.length - 1];
+      state.results[cubeType] = state.results[cubeType].map((item: any) => {
+        if (item.result === payload) {
+          return {
+            ...item,
+            dnf: !item.dnf,
+          };
+        }
+        return item;
+      });
     },
 
-    removeFromDNF(state: any, payload) {
-      state.dnf = state.dnf.filter((item: number) => item !== payload);
-    },
+    changePenalty(state: any, payload) {
+      const cubeType = state.currentSettings;
+      state.results[cubeType] = state.results[cubeType].map((item: any) => {
+        if (item.result === payload.result) {
+          return {
+            ...item,
+            result: item.penalty ? item.result - 2000 : item.result + 2000,
+            penalty: !item.penalty,
+          };
+        }
+        return item;
+      });
 
-    addToPenalty(state: any, payload) {
-      state.penalty.push(payload);
-    },
-
-    removeFromPenalty(state: any, payload) {
-      state.penalty = state.penalty.filter((item: number) => item !== payload);
+      state.favorites = state.favorites.map((item: any) => {
+        if (item.result === payload.result) {
+          return {
+            ...item,
+            result: item.penalty ? item.result - 2000 : item.result + 2000,
+            penalty: !item.penalty,
+          };
+        }
+        return item;
+      });
     },
   },
   getters: {
@@ -101,12 +144,20 @@ export default new Vuex.Store({
     },
 
     getAverageResult(state: any): number {
-      const allResults = state.results[state.currentSettings];
+      const cubeType = state.currentSettings;
+      const resultsArr = [];
+      // eslint-disable-next-line for-direction,no-plusplus
+      for (let i = 0; i < state.results[cubeType].length; i += 1) {
+        if (!state.results[cubeType][i].dnf) {
+          resultsArr.push(state.results[cubeType][i].result);
+        }
+      }
 
-      if (allResults.length) {
+      if (resultsArr.length) {
         // eslint-disable-next-line max-len
-        const average = (allResults.reduce((prevValue: number, curValue: number) => prevValue + curValue, 0)) / allResults.length;
-        return average;
+        const resultSum = resultsArr.reduce((prevValue: number, curValue: number) => prevValue + curValue, 0);
+
+        return resultSum / resultsArr.length;
       }
       return 0;
     },

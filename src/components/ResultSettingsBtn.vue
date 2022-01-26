@@ -22,6 +22,7 @@
             @click="$emit('toggle-dnf', item.result)"
             depressed
             :color="dnfActive ? '#ffaaaa' : ''"
+            :disabled="penaltyActive"
           >
             DNF
           </v-btn>
@@ -30,9 +31,10 @@
           <v-btn
             small
             text
-            @click="$emit('toggle-penalty', item.result)"
+            @click="$emit('toggle-penalty', item)"
             depressed
             :color="penaltyActive ? '#ffe000' : ''"
+            :disabled="dnfActive"
           >
             +2
           </v-btn>
@@ -40,7 +42,7 @@
         <v-list-item>
           <v-btn
             icon
-            @click="deleteResult(item.index - 1)"
+            @click="deleteResult(item.result)"
           >
             <v-icon>mdi-delete-outline</v-icon>
           </v-btn>
@@ -67,8 +69,8 @@ export default {
   },
 
   methods: {
-    deleteResult(index) {
-      this.$store.commit('deleteResult', index);
+    deleteResult(res) {
+      this.$store.commit('deleteResult', res);
     },
   },
 };
