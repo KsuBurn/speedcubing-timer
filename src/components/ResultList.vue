@@ -8,10 +8,19 @@
         >
           <v-list-item-content>{{ item.index }}.</v-list-item-content>
           <v-list-item-content class="align-end">
-            <ResultFormat :result="item.result"/>
+            <div :class="['result', {dnf: isDNFActive(item.result)}]">
+              <ResultFormat :result="item.result" :penalty-active="isPenaltyActive(item.result)" />
+              <span v-if="isPenaltyActive(item.result)" class="penalty">&nbsp;(+2)</span>
+            </div>
           </v-list-item-content>
 
-          <ResultSettingsBtn :item="item" />
+          <ResultSettingsBtn
+            :item="item"
+            @toggle-dnf="toggleDNF"
+            @toggle-penalty="togglePenalty"
+            :dnf-active="isDNFActive(item.result)"
+            :penalty-active="isPenaltyActive(item.result)"
+          />
 
           <v-btn
             icon
@@ -64,6 +73,30 @@ export default {
         this.$store.commit('addToFavorites', result);
       }
     },
+
+    toggleDNF(result) {
+      if (this.getDNF.find((res) => res === result)) {
+        this.$store.commit('removeFromDNF', result);
+      } else {
+        this.$store.commit('addToDNF', result);
+      }
+    },
+
+    togglePenalty(result) {
+      if (this.getPenalty.find((res) => res === result)) {
+        this.$store.commit('removeFromPenalty', result);
+      } else {
+        this.$store.commit('addToPenalty', result);
+      }
+    },
+
+    isDNFActive(result) {
+      return !!this.getDNF.find((res) => res === result);
+    },
+
+    isPenaltyActive(result) {
+      return !!this.getPenalty.find((res) => res === result);
+    },
   },
 
   computed: {
@@ -111,6 +144,14 @@ export default {
     getFavorites() {
       return this.$store.state.favorites;
     },
+
+    getDNF() {
+      return this.$store.state.dnf;
+    },
+
+    getPenalty() {
+      return this.$store.state.penalty;
+    },
   },
 };
 </script>
@@ -136,5 +177,18 @@ export default {
 .resultsList {
   max-height: 170px;
   overflow-y: auto;
+}
+
+.result {
+  display: flex;
+}
+
+.penalty {
+  color: #ffe000;
+}
+
+.dnf {
+  text-decoration: line-through;
+  color: #aaaaaa;
 }
 </style>

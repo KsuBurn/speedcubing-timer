@@ -26,6 +26,9 @@ export default new Vuex.Store({
     currentSettings: '3x3x3',
     scramble: [],
     favorites: [],
+    dnf: [],
+
+    penalty: [],
   },
   mutations: {
     changeSettings(state, payload) {
@@ -63,6 +66,30 @@ export default new Vuex.Store({
 
     removeFromFavorites(state: any, payload) {
       state.favorites = state.favorites.filter((item: number) => item !== payload);
+    },
+
+    addToDNF(state: any, payload) {
+      const cubeType = state.currentSettings;
+
+      const resultList = state.results[cubeType];
+      resultList.splice(payload, 1);
+      console.log('newResultList', payload);
+      console.log('resultList', resultList);
+      state.dnf.push(payload);
+      state.bestResult[cubeType] = Math.min.apply(null, resultList);
+      state.lastResult[cubeType] = resultList[resultList.length - 1];
+    },
+
+    removeFromDNF(state: any, payload) {
+      state.dnf = state.dnf.filter((item: number) => item !== payload);
+    },
+
+    addToPenalty(state: any, payload) {
+      state.penalty.push(payload);
+    },
+
+    removeFromPenalty(state: any, payload) {
+      state.penalty = state.penalty.filter((item: number) => item !== payload);
     },
   },
   getters: {

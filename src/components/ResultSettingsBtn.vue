@@ -6,8 +6,6 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          color="primary"
-          dark
           v-bind="attrs"
           v-on="on"
           icon
@@ -21,6 +19,9 @@
           <v-btn
             small
             text
+            @click="$emit('toggle-dnf', item.result)"
+            depressed
+            :color="dnfActive ? '#ffaaaa' : ''"
           >
             DNF
           </v-btn>
@@ -29,6 +30,9 @@
           <v-btn
             small
             text
+            @click="$emit('toggle-penalty', item.result)"
+            depressed
+            :color="penaltyActive ? '#ffe000' : ''"
           >
             +2
           </v-btn>
@@ -52,6 +56,8 @@ export default {
 
   props: {
     item: Object,
+    dnfActive: Boolean,
+    penaltyActive: Boolean,
   },
 
   data() {

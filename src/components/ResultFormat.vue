@@ -11,12 +11,18 @@ export default {
 
   props: {
     result: Number,
+    penaltyActive: Boolean,
   },
 
   methods: {
-    normalizeTimer(result) {
+    normalizeTimer(res) {
+      let result = res;
       let min;
       let sec;
+
+      if (this.penaltyActive) {
+        result += 2000;
+      }
 
       if (result / 60000 >= 1) {
         min = Math.floor(result / 60000);
