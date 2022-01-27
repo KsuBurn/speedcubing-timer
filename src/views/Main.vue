@@ -80,6 +80,7 @@ export default {
   flex-direction: column;
   min-height: calc(100% - 50px);
   padding: 15px;
+  background-color: #f3fcfd;
 }
 
 .currentCube {

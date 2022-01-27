@@ -58,5 +58,7 @@ export default {
 <style scoped>
 .favoriteWrap {
   padding: 15px;
+  background-color: #f3fcfd;
+  min-height: calc(100% - 50px);
 }
 </style>

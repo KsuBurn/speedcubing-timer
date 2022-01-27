@@ -7,21 +7,6 @@
       <p class="sec">{{ timeForView.sec }}.</p>
       <p class="msec">{{ timeForView.msec }}</p>
     </div>
-
-    <div>
-      <v-btn
-        elevation="2"
-        @click="startTimer"
-      >
-        start
-      </v-btn>
-      <v-btn
-        elevation="2"
-        @click="stopTimer"
-      >
-        stop
-      </v-btn>
-    </div>
   </div>
 </template>
 
@@ -203,10 +188,10 @@ export default {
 
 .min,
 .sec {
-  font-size: 70px;
+  font-size: 90px;
 }
 
 .msec {
-  font-size: 50px;
+  font-size: 70px;
 }
 </style>

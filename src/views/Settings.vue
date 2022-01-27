@@ -37,6 +37,8 @@ export default {
 <style scoped>
 .mainContainer {
   padding: 15px;
+  background-color: #f3fcfd;
+  min-height: calc(100% - 50px);
 }
 
 .input {

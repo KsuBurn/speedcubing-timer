@@ -1,7 +1,7 @@
 <template>
   <div>
-    <p v-if="normalizeTimer(result).min">{{ normalizeTimer(result).min }} : </p>
-    <p>{{ normalizeTimer(result).sec }}</p>
+    <span v-if="normalizeTimer(result).min">{{ normalizeTimer(result).min }} : </span>
+    <span>{{ normalizeTimer(result).sec }}</span>
   </div>
 </template>
 
