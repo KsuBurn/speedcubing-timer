@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { ResultType, StoreType } from '@/store/types';
 
 Vue.use(Vuex);
 
@@ -28,15 +29,15 @@ export default new Vuex.Store({
     favorites: [],
   },
   mutations: {
-    saveScramble(state, payload) {
+    saveScramble(state: StoreType, payload: string[]) {
       state.scramble = payload;
     },
 
-    changeSettings(state, payload) {
+    changeSettings(state, payload: string) {
       state.currentSettings = payload;
     },
 
-    saveResult(state: any, payload) {
+    saveResult(state: StoreType, payload: {cubeType: string, result: number}) {
       if (payload.cubeType in state.results) {
         state.results[payload.cubeType] = [...state.results[payload.cubeType], {
           result: payload.result,
@@ -52,14 +53,14 @@ export default new Vuex.Store({
       }
     },
 
-    deleteResult(state: any, payload) {
+    deleteResult(state: StoreType, payload: number) {
       const cubeType = state.currentSettings;
       const resultList = state.results[cubeType];
 
-      state.results[cubeType] = resultList.filter((item: any) => item.result !== payload);
+      state.results[cubeType] = resultList.filter((item: ResultType) => item.result !== payload);
     },
 
-    changeBestResult(state: any) {
+    changeBestResult(state: StoreType) {
       const cubeType = state.currentSettings;
 
       // eslint-disable-next-line array-callback-return,consistent-return
@@ -77,10 +78,10 @@ export default new Vuex.Store({
       }
       const bestResult = Math.min.apply(null, resultsArr);
       // eslint-disable-next-line max-len
-      state.bestResult[cubeType] = state.results[cubeType].find((item: any) => item.result === bestResult).result;
+      state.bestResult[cubeType] = state.results[cubeType].find((item: ResultType) => item.result === bestResult)!.result;
     },
 
-    changeLastResult(state: any) {
+    changeLastResult(state: StoreType) {
       const cubeType = state.currentSettings;
       if (!state.results[cubeType].length) {
         return;
@@ -89,17 +90,18 @@ export default new Vuex.Store({
       state.lastResult[cubeType] = state.results[cubeType][state.results[cubeType].length - 1].result;
     },
 
-    addToFavorites(state: any, payload) {
+    addToFavorites(state: StoreType, payload) {
       state.favorites.push(payload);
     },
 
-    removeFromFavorites(state: any, payload) {
-      state.favorites = state.favorites.filter((item: any) => item.result !== payload.result);
+    removeFromFavorites(state: StoreType, payload) {
+      // eslint-disable-next-line max-len
+      state.favorites = state.favorites.filter((item: ResultType) => item.result !== payload.result);
     },
 
-    changeDNF(state: any, payload) {
+    changeDNF(state: StoreType, payload) {
       const cubeType = state.currentSettings;
-      state.results[cubeType] = state.results[cubeType].map((item: any) => {
+      state.results[cubeType] = state.results[cubeType].map((item: ResultType) => {
         if (item.result === payload) {
           return {
             ...item,
@@ -110,9 +112,9 @@ export default new Vuex.Store({
       });
     },
 
-    changePenalty(state: any, payload) {
+    changePenalty(state: StoreType, payload) {
       const cubeType = state.currentSettings;
-      state.results[cubeType] = state.results[cubeType].map((item: any) => {
+      state.results[cubeType] = state.results[cubeType].map((item: ResultType) => {
         if (item.result === payload.result) {
           return {
             ...item,
@@ -123,7 +125,7 @@ export default new Vuex.Store({
         return item;
       });
 
-      state.favorites = state.favorites.map((item: any) => {
+      state.favorites = state.favorites.map((item: ResultType) => {
         if (item.result === payload.result) {
           return {
             ...item,
@@ -136,14 +138,14 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    getResults(state: any) {
+    getResults(state: StoreType) {
       if (state.currentSettings in state.results) {
         return state.results[state.currentSettings];
       }
       return [];
     },
 
-    getAverageResult(state: any): number {
+    getAverageResult(state: StoreType): number {
       const cubeType = state.currentSettings;
       const resultsArr = [];
       // eslint-disable-next-line for-direction,no-plusplus
@@ -162,6 +164,4 @@ export default new Vuex.Store({
       return 0;
     },
   },
-  actions: {},
-  modules: {},
 });
